@@ -1,9 +1,14 @@
+#+title: Install cGENIE on modern HPC
+#+author: Rui Ying
+#+language: en
+
 * Install cGENIE on modern HPC
 
 ** Install dependency
 bash install_cGENIE_dependency.sh
 
-** Change user.mak and copy to cgenie.muffin/genie-main
+** Copy user.mak
+cp user.mak ~/cgenie.muffin/genie-main
 
 ** Compile the model
 
