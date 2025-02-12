@@ -3,7 +3,6 @@
 #####################################################################
 ### SCIPT TO RUN ./RUNMUFFIN.SH ON REDHAT HPC #######################
 #####################################################################
-# export LD_LIBRARY_PATH=$HOME/.local/lib
 
 ## create a sbatch file to cgenie.job directory
 printf "#!/bin/sh
