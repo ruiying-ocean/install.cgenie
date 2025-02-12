@@ -11,7 +11,7 @@ bash install_cGENIE_dependency.sh
 *** 2. Copy user.mak
 cp user.mak ~/cgenie.muffin/genie-main
 
-*** 3. Compile the model
+*** 3. Compile the model (make sure using python2, e.g., open an interactive session)
 
 ./runmuffin.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
 
