@@ -1,20 +1,21 @@
-#+title: Install cGENIE on modern HPC
+#+title: Install cGENIE on modern HPC (slurm platform)
 #+author: Rui Ying
 #+language: en
 
-* Install cGENIE on modern HPC
+Adopted from https://github.com/richardstockey/cgenie.muffin.mix
 
-** Install dependency
+** Steps
+*** 1. Install dependency
 bash install_cGENIE_dependency.sh
 
-** Copy user.mak
+*** 2. Copy user.mak
 cp user.mak ~/cgenie.muffin/genie-main
 
-** Compile the model
+*** 3. Compile the model
 
 ./runmuffin.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
 
-** Run with slurm
+*** 4. Run with slurm
 
 copy runmuffin-slurm.sh to cgenie.muffin/genie-main
 chmod +x runmuffin-slurm.sh
