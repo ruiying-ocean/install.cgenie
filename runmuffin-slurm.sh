@@ -8,8 +8,9 @@
 ## create a sbatch file to cgenie.job directory
 printf "#!/bin/sh
 
-#SBATCH --nodes=1                # Number of nodes requested
-#SBATCH --time=48:00:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=5
+#SBATCH --time=50:00:00
 #SBATCH --job-name=geniejob
 #SBATCH --output=runmuffin.out
 
