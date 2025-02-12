@@ -11,7 +11,8 @@ printf "#!/bin/sh
 #SBATCH --cpus-per-task=1
 #SBATCH --time=120:00:00
 #SBATCH --job-name=geniejob
-#SBATCH --output=runmuffin.out
+#SBATCH --output=muffin.out
+#SBATCH --partition=compute-64-512 
 
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
