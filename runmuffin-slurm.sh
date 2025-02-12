@@ -9,7 +9,7 @@ printf "#!/bin/sh
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=50:00:00
+#SBATCH --time=120:00:00
 #SBATCH --job-name=geniejob
 #SBATCH --output=runmuffin.out
 
