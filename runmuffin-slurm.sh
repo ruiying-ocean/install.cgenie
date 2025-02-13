@@ -1,10 +1,12 @@
 #!/bin/bash -e
-#
-#####################################################################
-### SCIPT TO RUN ./RUNMUFFIN.SH ON REDHAT HPC #######################
-#####################################################################
 
-## create a sbatch file to cgenie.job directory
+# Generate a timestamp in the format: YYYYMMDD-HH:MM:SS
+TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
+
+# Define the SBATCH script filename
+FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
+
+# Create and write the SBATCH script
 printf "#!/bin/sh
 
 #SBATCH --nodes=1
@@ -22,9 +24,8 @@ cd ~/cgenie.muffin/genie-main
 ## if you want to re-compile, uncomment this
 ## make cleanall &> ~/cgenie_log/cleanall_trash.txt;
 
-./runmuffin.sh $1 $2 $3 $4 $5 &> ~/cgenie_log/cgenie.output_$(date '+%F_%H.%M').log
-" > ~/cgenie.jobs/muffin.sbatch.$(date '+%F_%H.%M')
+./runmuffin.sh $1 $2 $3 $4 $5 &> ~/cgenie_log/cgenie.output_$TIMESTAMP.log
+" > "$FILENAME"
 
-# submit a job
-sbatch ~/cgenie.jobs/muffin.sbatch.$(date '+%F_%H.%M')
-
+# Submit the job
+sbatch "$FILENAME"
