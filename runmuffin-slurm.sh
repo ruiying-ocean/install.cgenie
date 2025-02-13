@@ -19,11 +19,12 @@ export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
 
 cd ~/cgenie.muffin/genie-main
 
-make cleanall &> ~/cgenie_log/cleanall_trash.txt;
+## if you want to re-compile, uncomment this
+## make cleanall &> ~/cgenie_log/cleanall_trash.txt;
 
 ./runmuffin.sh $1 $2 $3 $4 $5 &> ~/cgenie_log/cgenie.output_$(date '+%F_%H.%M').log
-" > ~/cgenie.jobs/muffin.sbatch
+" > ~/cgenie.jobs/muffin.sbatch.$(date '+%F_%H.%M')
 
 # submit a job
-sbatch ~/cgenie.jobs/muffin.sbatch
+sbatch ~/cgenie.jobs/muffin.sbatch.$(date '+%F_%H.%M')
 
