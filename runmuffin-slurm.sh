@@ -10,7 +10,7 @@ FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 REFERENCE_YEARS=10000
 
 # Calculate the required time in minutes based on $4 (model running years)
-TIME_MINUTES=$(( 3800 * $4 / REFERENCE_YEARS ))
+TIME_MINUTES=$(( 4000 * $4 / REFERENCE_YEARS ))
 
 # Convert minutes to HH:MM:SS format
 TIME_HHMMSS=$(printf "%02d:%02d:00" $((TIME_MINUTES / 60)) $((TIME_MINUTES % 60)))
