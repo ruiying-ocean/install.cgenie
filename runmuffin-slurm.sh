@@ -6,12 +6,21 @@ TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
 # Define the SBATCH script filename
 FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 
+# Reference years for which the time is known (e.g., 3800 minutes for 1000 years)
+REFERENCE_YEARS=1000
+
+# Calculate the required time in minutes based on $4 (model running years)
+TIME_MINUTES=$(( 3800 * $4 / REFERENCE_YEARS ))
+
+# Convert minutes to HH:MM:SS format
+TIME_HHMMSS=$(printf "%02d:%02d:00" $((TIME_MINUTES / 60)) $((TIME_MINUTES % 60)))
+
 # Create and write the SBATCH script
 printf "#!/bin/sh
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=120:00:00
+#SBATCH --time=$TIME_HHMMSS
 #SBATCH --job-name=geniejob
 #SBATCH --output=muffin.out
 #SBATCH --partition=compute-64-512 
