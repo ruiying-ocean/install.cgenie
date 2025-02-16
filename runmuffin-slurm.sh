@@ -7,7 +7,7 @@ TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
 FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 
 # Reference years for which the time is known (e.g., 3800 minutes for 1000 years)
-REFERENCE_YEARS=1000
+REFERENCE_YEARS=10000
 
 # Calculate the required time in minutes based on $4 (model running years)
 TIME_MINUTES=$(( 3800 * $4 / REFERENCE_YEARS ))
