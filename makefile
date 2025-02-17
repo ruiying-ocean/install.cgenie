@@ -2,7 +2,7 @@
 TARGET_DIR := $(HOME)/cgenie.muffin/genie-main
 
 # Define the files to copy
-FILES := runmuffin-slurm.sh user.mak
+FILES := runmuffin-slurm.sh user.mak .gitignore
 
 # Default target
 all: cp_files
