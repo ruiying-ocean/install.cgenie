@@ -1,1 +1,7 @@
 .DS_Store
+*.exe
+*.a
+*.dep
+*.o
+*.out
+*.mod
