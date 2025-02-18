@@ -22,7 +22,7 @@ printf "#!/bin/sh
 #SBATCH --cpus-per-task=1
 #SBATCH --time=$TIME_HHMMSS
 #SBATCH --job-name=geniejob
-#SBATCH --output=~/cgenie_log/slurm-%%j.out
+#SBATCH --output=$HOME/cgenie_log/slurm-%%j.out
 #SBATCH --partition=compute-64-512 
 
 export PATH=$HOME/.local/bin:$PATH
