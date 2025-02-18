@@ -22,6 +22,7 @@ printf "#!/bin/sh
 #SBATCH --cpus-per-task=1
 #SBATCH --time=$TIME_HHMMSS
 #SBATCH --job-name=geniejob
+#SBATCH --output=~/cgenie_log/slurm-%%j.out
 #SBATCH --partition=compute-64-512 
 
 export PATH=$HOME/.local/bin:$PATH
@@ -32,7 +33,7 @@ cd ~/cgenie.muffin/genie-main
 ## if you want to re-compile, uncomment this
 ## make cleanall &> ~/cgenie_log/cleanall_trash.txt;
 
-./runmuffin.sh $1 $2 $3 $4 $5 &> ~/cgenie_log/cgenie.output_$TIMESTAMP.log
+./runmuffin.sh $1 $2 $3 $4 $5
 " > "$FILENAME"
 
 # Submit the job
