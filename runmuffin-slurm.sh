@@ -6,11 +6,12 @@ TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
 # Define the SBATCH script filename
 FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 
-# Reference years for which the time is known (e.g., 3800 minutes for 1000 years)
+# Reference years for which the time is known (e.g., 4000 minutes for 10 kyr)
 REFERENCE_YEARS=10000
+REFERENCE_MINS=4000
 
 # Calculate the required time in minutes based on $4 (model running years)
-TIME_MINUTES=$(( 4000 * $4 / REFERENCE_YEARS ))
+TIME_MINUTES=$(( REFERENCE_MINS * $4 / REFERENCE_YEARS ))
 
 # Convert minutes to HH:MM:SS format
 TIME_HHMMSS=$(printf "%02d:%02d:00" $((TIME_MINUTES / 60)) $((TIME_MINUTES % 60)))
