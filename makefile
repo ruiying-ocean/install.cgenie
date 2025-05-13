@@ -1,13 +1,13 @@
 # Define the target directory
 TARGET_DIR := $(HOME)/cgenie.muffin/genie-main
 
-# Define the files to copy
-FILES := runmuffin-slurm.sh user.mak .gitignore
+# Define the files to copy to the target directory (excluding .gitignore)
+FILES := runmuffin-slurm.sh user.mak
 
 # Default target
 all: cp_files
 
-# Target to copy files and make runmuffin-slurm.sh executable
+# Target to copy files and handle .gitignore separately
 cp_files:
 	@echo "Copying files to $(TARGET_DIR)..."
 	@for file in $(FILES); do \
@@ -20,3 +20,8 @@ cp_files:
 			echo "File $$file not found. Skipping..."; \
 		fi; \
 	done
+	@if [ -f .gitignore ]; then \
+		cp -f .gitignore $(TARGET_DIR)/.. && echo "Copied .gitignore to $(TARGET_DIR)/.."; \
+	else \
+		echo ".gitignore not found. Skipping..."; \
+	fi
