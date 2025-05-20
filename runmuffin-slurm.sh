@@ -39,3 +39,6 @@ cd ~/cgenie.muffin/genie-main
 
 # Submit the job
 sbatch "$FILENAME"
+
+# Clean up the SBATCH script file
+rm "$FILENAME"
