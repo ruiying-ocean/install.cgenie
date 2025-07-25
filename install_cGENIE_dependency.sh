@@ -16,6 +16,7 @@ cd $HOME
 # fi
 # tar xzf v4.6.1.tar.gz
 cd netcdf-c-4.6.1
+## not sure if disable-netcdf-4 is necessary, but disable-dap is 
 ./configure --prefix=$INSTALL_DIR --disable-netcdf-4 --disable-dap
 make clean && make check && make install
 cd ~
