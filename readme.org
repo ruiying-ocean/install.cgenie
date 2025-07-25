@@ -11,12 +11,12 @@ bash install_cGENIE_dependency.sh
 *** 2. Copy user.mak
 cp user.mak ~/cgenie.muffin/genie-main
 
-*** 3. Compile the model (make sure using python2, e.g., open an interactive session)
-
+*** 3. Compile the model (make sure using python2 and the right compiler)
+conda activate py2
+module load gcc/9.2.0
 ./runmuffin.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
 
 *** 4. Run with slurm
-
 copy runmuffin-slurm.sh to cgenie.muffin/genie-main
 chmod +x runmuffin-slurm.sh
 ./runmuffin-slurm.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
