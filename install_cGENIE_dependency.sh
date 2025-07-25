@@ -8,6 +8,9 @@ mkdir -p $INSTALL_DIR
 cd $HOME
 
 ### Install netcdf-4.6.1 ###
+### netcdf-c/cxx/fortran need old version of gcc (which includes gfortran)
+### Last try: gcc/9.2.0, hdf5/1.10.6/gcc
+
 # if [ ! -f v4.6.1.tar.gz ]; then
 #     wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.6.1.tar.gz
 # fi
