@@ -18,5 +18,7 @@ module load gcc/9.2.0
 
 *** 4. Run with slurm
 copy runmuffin-slurm.sh to cgenie.muffin/genie-main
+copy .gitignore to cgenie.muffin/genie-main
+
 chmod +x runmuffin-slurm.sh
 ./runmuffin-slurm.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
