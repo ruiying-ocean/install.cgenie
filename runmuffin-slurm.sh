@@ -41,4 +41,4 @@ cd ~/cgenie.muffin/genie-main
 # Submit the job
 sbatch "$FILENAME"
 
-rm "$FILENAME"
+rm -f "$FILENAME"
