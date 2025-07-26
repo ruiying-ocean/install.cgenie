@@ -6,12 +6,14 @@ TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
 # Define the SBATCH script filename
 FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 
-# Reference years for which the time is known (e.g., 4000 minutes for 10 kyr)
+# Reference years for which the time is known (e.g., 3800 minutes for 1000 years)
 REFERENCE_YEARS=10000
-REFERENCE_MINS=4000
+COMPLEXITY=1 #10 for KPG run, 1 for LGM run 
+# Calculate the required time in minutes based on $4 (model running years)
+TIME_MINUTES=$((10000 * COMPLEXITY * $4 / REFERENCE_YEARS ))
 
 # Calculate the required time in minutes based on $4 (model running years)
-TIME_MINUTES=$(( REFERENCE_MINS * $4 / REFERENCE_YEARS ))
+TIME_MINUTES=$(( 1000 * $4 / REFERENCE_YEARS ))
 
 # Convert minutes to HH:MM:SS format
 TIME_HHMMSS=$(printf "%02d:%02d:00" $((TIME_MINUTES / 60)) $((TIME_MINUTES % 60)))
@@ -24,7 +26,13 @@ printf "#!/bin/sh
 #SBATCH --time=$TIME_HHMMSS
 #SBATCH --job-name=geniejob
 #SBATCH --output=$HOME/cgenie_log/slurm-%%j.out
-#SBATCH --partition=compute-64-512 
+#SBATCH --partition=compute
+
+# Initialize Conda (change path as needed)
+source /gpfs/home/vhf24tbu/miniforge3/etc/profile.d/conda.sh
+
+# Activate your environment (change 'base' to your environment name)
+conda activate py2
 
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
@@ -39,6 +47,3 @@ cd ~/cgenie.muffin/genie-main
 
 # Submit the job
 sbatch "$FILENAME"
-
-# Clean up the SBATCH script file
-rm "$FILENAME"
