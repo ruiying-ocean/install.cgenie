@@ -4,20 +4,268 @@
 
 Adopted from https://github.com/richardstockey/cgenie.muffin.mix
 
-** Steps
-*** 1. Install dependency
-bash install_cGENIE_dependency.sh
+* About cGENIE
 
-*** 2. Copy user.mak
-cp user.mak ~/cgenie.muffin/genie-main
+cGENIE (muffin) is an Earth system model of intermediate complexity used for paleoclimate and biogeochemical simulations. The model couples atmosphere, ocean, sea-ice, and biogeochemistry components to simulate climate and carbon cycle dynamics over geological timescales.
 
-*** 3. Compile the model (make sure using python2 and the right compiler)
+Official repository: https://github.com/derpycode/cgenie.muffin
+
+This repository provides installation scripts and configuration files specifically for HPC environments running SLURM job schedulers.
+
+* Prerequisites
+
+** Required Software Dependencies
+
+| Dependency | Version | Notes |
+|------------+----------+-------|
+| GCC (with gfortran) | 9.2.0 recommended | Older GCC versions required for NetCDF compatibility |
+| Python | 2.7 | Required for build scripts (legacy requirement) |
+| NetCDF-C | 4.6.1 | Network Common Data Form library (C interface) |
+| NetCDF-CXX | 4.2 | NetCDF C++ interface |
+| NetCDF-Fortran | 4.4.4 | NetCDF Fortran interface |
+| libxml2 | 2.13.5 | XML parsing library |
+| libxslt | 1.1.42 | XSLT transformation library |
+| HDF5 | 1.10.6 recommended | Required by NetCDF (typically loaded as module) |
+| SLURM | any | Job scheduler for HPC |
+
+** System Requirements
+
+- Linux HPC environment with SLURM scheduler
+- User home directory with sufficient storage (~/.local for libraries, ~/cgenie_output for results)
+- Ability to load environment modules (module load)
+- Conda/Miniforge for Python 2 environment
+
+** Before You Begin
+
+1. Clone the main cGENIE repository to your home directory:
+   #+begin_src bash
+   cd ~
+   git clone https://github.com/derpycode/cgenie.muffin.git
+   #+end_src
+
+2. Create required directories:
+   #+begin_src bash
+   mkdir -p ~/cgenie.jobs      # For SLURM job scripts
+   mkdir -p ~/cgenie_log       # For job output logs
+   mkdir -p ~/cgenie_output    # For model output
+   #+end_src
+
+3. Set up Python 2 environment (if not already available):
+   #+begin_src bash
+   conda create -n py2 python=2.7
+   conda activate py2
+   #+end_src
+
+* Installation Steps
+
+** 1. Install Dependencies
+
+The ~install_cGENIE_dependency.sh~ script compiles and installs NetCDF libraries and related dependencies to ~~/.local~.
+
+*Important notes about this script:*
+- Requires GCC 9.2.0 and HDF5 1.10.6 to be loaded (via ~module load~)
+- Expects source tarballs to already be downloaded and extracted in ~$HOME~
+- Downloads are commented out in the script; uncomment or download manually
+- Installation takes 30-60 minutes depending on system
+
+*Before running:*
+1. Load required modules:
+   #+begin_src bash
+   module load gcc/9.2.0
+   module load hdf5/1.10.6/gcc  # or equivalent on your system
+   #+end_src
+
+2. Download source tarballs to ~$HOME~:
+   #+begin_src bash
+   cd ~
+   wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.6.1.tar.gz
+   wget https://downloads.unidata.ucar.edu/netcdf-cxx/4.2/netcdf-cxx-4.2.tar.gz
+   wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.4.4.tar.gz
+   wget https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.5.tar.xz
+   wget https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz
+
+   # Extract all archives
+   tar xzf v4.6.1.tar.gz
+   tar xzf netcdf-cxx-4.2.tar.gz
+   tar xzf v4.4.4.tar.gz
+   tar xf libxml2-2.13.5.tar.xz
+   tar xf libxslt-1.1.42.tar.xz
+   #+end_src
+
+3. Run the installation script:
+   #+begin_src bash
+   cd /path/to/install.cgenie
+   bash install_cGENIE_dependency.sh
+   #+end_src
+
+4. Verify installation - the script will run ~make testbiogem~. Look for ~*TEST OK*~ in the output.
+
+** 2. Configure cGENIE Build Settings
+
+Copy the pre-configured ~user.mak~ file to the cGENIE main directory:
+
+#+begin_src bash
+# Manual copy
+cp user.mak ~/cgenie.muffin/genie-main/
+
+# OR use makefile
+make
+#+end_src
+
+*What user.mak configures:*
+- Fortran compiler: ~gfortran~
+- C/C++ compiler: ~gcc~/~g++~
+- NetCDF library path: ~~/.local~
+- Build type: ~SHIP~ (optimized production build)
+- Output directory: ~~~/cgenie_output~
+
+*If your HPC uses different compilers:* Edit ~user.mak~ before copying to set ~F77~, ~CC~, and ~CXX~ to your system's compilers.
+
+** 3. Test Local Compilation
+
+Before setting up SLURM jobs, test that the model compiles correctly:
+
+#+begin_src bash
 conda activate py2
 module load gcc/9.2.0
-./runmuffin.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
+module load hdf5/1.10.6/gcc
 
-*** 4. Run with slurm
-copy runmuffin-slurm.sh and .gitignore to cgenie.muffin/genie-main
+cd ~/cgenie.muffin/genie-main
+make cleanall
+make testbiogem
+#+end_src
 
-chmod +x runmuffin-slurm.sh
-./runmuffin-slurm.sh [base-config] [user-config directory] [model-years] [restart-if-applicable]
+If successful, you should see ~*TEST OK*~ in the output.
+
+** 4. Set Up SLURM Job Submission
+
+Copy the SLURM wrapper script and gitignore file:
+
+#+begin_src bash
+# Manual copy
+cp runmuffin-slurm.sh ~/cgenie.muffin/genie-main/
+cp .gitignore ~/cgenie.muffin/
+chmod +x ~/cgenie.muffin/genie-main/runmuffin-slurm.sh
+
+# OR use makefile
+make
+#+end_src
+
+*Important: Edit runmuffin-slurm.sh for your system*
+
+The script contains HPC-specific settings that likely need adjustment:
+
+| Line | Setting | Description |
+|------+----------+-------------|
+| 9 | ~COMPLEXITY=10~ | Time multiplier (10 for K-Pg runs, 1 for LGM runs) |
+| 22 | ~--partition=compute~ | Your SLURM partition name |
+| 27 | ~source /gpfs/home/.../conda.sh~ | Path to YOUR conda installation |
+
+* Usage
+
+** Running cGENIE Simulations
+
+*** Interactive Test Run (without SLURM)
+
+#+begin_src bash
+cd ~/cgenie.muffin/genie-main
+conda activate py2
+module load gcc/9.2.0
+
+./runmuffin.sh [base-config] [user-config] [experiment-name] [model-years]
+#+end_src
+
+Example:
+#+begin_src bash
+./runmuffin.sh cgenie.eb_go_gs_ac_bg.p0055c.BASESFeTDTL PUBS.FePDYN test 10000
+#+end_src
+
+*** SLURM Job Submission
+
+#+begin_src bash
+cd ~/cgenie.muffin/genie-main
+./runmuffin-slurm.sh [base-config] [user-config] [experiment-name] [model-years] [restart]
+#+end_src
+
+Arguments:
+1. ~base-config~: Base model configuration (e.g., ~cgenie.eb_go_gs_ac_bg.p0055c.BASESFeTDTL~)
+2. ~user-config~: Your user configuration directory (e.g., ~PUBS.FePDYN~)
+3. ~experiment-name~: Name for this experiment run
+4. ~model-years~: Number of model years to simulate
+5. ~restart~ (optional): For restart runs
+
+The script will:
+- Generate a timestamped SBATCH script in ~~~/cgenie.jobs/~
+- Calculate wall time based on ~COMPLEXITY * model-years~
+- Submit the job to SLURM
+- Remove the temporary SBATCH file after submission
+- Log output to ~~~/cgenie_log/slurm-<job-id>.out~
+
+** Monitoring Jobs
+
+#+begin_src bash
+# Check job status
+squeue -u $USER
+
+# View job output (while running or after completion)
+tail -f ~/cgenie_log/slurm-<job-id>.out
+
+# Check model output
+ls -lh ~/cgenie_output/
+#+end_src
+
+* Troubleshooting
+
+** Common Issues
+
+*** NetCDF library errors during compilation
+- Ensure GCC 9.2.0 is loaded: ~module load gcc/9.2.0~
+- Check that ~~/.local/lib~ contains ~libnetcdf.so~, ~libnetcdff.so~
+- Verify ~LD_LIBRARY_PATH~ includes ~~/.local/lib~
+
+*** Python 2 not found
+- Activate conda environment: ~conda activate py2~
+- Verify: ~python --version~ should show ~Python 2.7.x~
+
+*** Job fails immediately on SLURM
+- Check partition name in ~runmuffin-slurm.sh~ line 22
+- Verify conda path in ~runmuffin-slurm.sh~ line 27
+- Check log file: ~~~/cgenie_log/slurm-<job-id>.out~
+
+*** Compilation fails with "make: gfortran: Command not found"
+- Load GCC module: ~module load gcc/9.2.0~
+- Or edit ~user.mak~ to use your system's Fortran compiler
+
+** Getting Help
+
+- cGENIE documentation: https://github.com/derpycode/cgenie.muffin/wiki
+- Report issues with this installation repository: https://github.com/richardstockey/cgenie.muffin.mix
+
+* Notes for Different HPC Systems
+
+This installation setup was developed for a specific HPC environment and may require modifications:
+
+** System-specific modifications needed:
+
+1. *Module names and versions*: Your HPC may use different names/versions for ~gcc~ and ~hdf5~ modules
+2. *Partition names*: Edit ~--partition~ in ~runmuffin-slurm.sh~
+3. *Conda/Python paths*: Update conda initialization path in ~runmuffin-slurm.sh~
+4. *Job time limits*: Adjust ~COMPLEXITY~ multiplier based on your system's performance
+5. *Scratch storage*: You may want to redirect ~cgenie_output~ to scratch filesystem
+
+** To adapt for your system:
+
+1. Check available modules: ~module avail~
+2. Find GCC with gfortran: ~module show gcc/<version>~
+3. Check SLURM partitions: ~sinfo~
+4. Locate your conda installation: ~which conda~, then find ~conda.sh~ in ~../etc/profile.d/~
+
+* File Descriptions
+
+| File | Purpose |
+|------+---------|
+| ~install_cGENIE_dependency.sh~ | Compiles NetCDF and related libraries to ~~/.local~ |
+| ~user.mak~ | cGENIE build configuration (compilers, paths, options) |
+| ~runmuffin-slurm.sh~ | SLURM job wrapper for submitting cGENIE runs |
+| ~.gitignore~ | Prevents committing large output files to git |
+| ~makefile~ | Convenience makefile to copy files to cGENIE installation |
