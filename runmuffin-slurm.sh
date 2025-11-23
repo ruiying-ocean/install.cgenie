@@ -6,7 +6,7 @@ TIMESTAMP=$(date '+%Y%m%d-%H:%M:%S')
 # Define the SBATCH script filename
 FILENAME=~/cgenie.jobs/muffin.sbatch.$TIMESTAMP
 
-COMPLEXITY=10 #10 for KPG run, 1 for LGM run 
+COMPLEXITY=1 #10 for KPG run, 1 for LGM run 
 TIME_MINUTES=$(( $COMPLEXITY * $4 ))
 
 # Convert minutes to HH:MM:SS format
